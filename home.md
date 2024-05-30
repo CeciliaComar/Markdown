@@ -1,14 +1,45 @@
-# REPORT
+# REPORT DEMO CYBERSECURITY: Vunlhub Napping
+**CECILIA COMAR IN2000243**
 
-## Create, Share and Collaborate
+## Introduction
+Napping is a Vulnhub machine created for highlighting the exploit of Tab Nabbing.
+Tab Nabbing is a type of phishing attack where a malicious website or script alters the content of a browser tab after 
+the user has navigated away from it, typically to another tab or application. The altered content often mimics a 
+legitimate website, tricking users into entering their credentials or other sensitive information.
+In this report a Tab Nabbing attack will be performed to phish some credentials from an administrator.
+Then, thanks to the bad practice followed by this user to use the same credential also for SSH, it will be possible to 
+enter into the machine using the SSH protocol.
+Due to a sudo misconfiguration it will be possible also to perform privilege escalation obtaining root access to the machine.
 
 ![Photo of Mountain](images/mountain.jpg)
 
 [Docsify](https://docsify.js.org/#/) can generate article, portfolio and documentation websites on the fly. Unlike Docusaurus, Hugo and many other Static Site Generators (SSG), it does not generate static html files. Instead, it smartly loads and parses your Markdown content files and displays them as a website.
 
-## Introduction
+## Scan of the network
+First of all the command *hostname -I* has to be performed in order to discover the IP address of the machine from which the attacker is working.
+Then the network has to be scanned in order to find other machines in it: this can be done with the command *sudo nmap -v --min-rate 10000 10.0.2.3-254 | grep open*.
+The output is the one in the image below:
+![Photo of Mountain](images/Screenshot%202024-05-30%20091452.png)
+A more accurate analysis of the IP address *10.0.2.15* is performed with the command *sudo nmap -v -sV -sC -oN nmap 10.0.2.15 -p-* where:
+* thanks to the option *-sV* *nmap* will try to determinate the exact version of the services running on the open ports
+* the option *-oN nmap* saves the output of the scanning in a file named nmap and in this way there is a register of the results of the scan.
+![Photo of Mountain](images/Screenshot%202024-05-30%20092208.png)
+From the output of this command 2 relevant things can be observed:
+1. on the port 22 is running the process OpenSSH
+2. on the port 80 is running the process Apache http
+Since much can't be done with SSH, a look to the Web Site is taken.
 
-**Markdown** is a system-independent markup language that is easier to learn and use than **HTML**.
+## Web Page
+The web page related to the IP address *10.0.2.15* shows a Login page:
+![Photo of Mountain](images/Screenshot%202024-05-30%20092739.png)
+Once an account is created (with any username and password), after the log a free blog promotions site appears:
+![img.png](img.png)
+I chose as username *test* and as password *passoword*.
+Any link can be here submitted and when this is done, it is displayed on the site for us to check out: 
+if as link is inserted the IP address of the machine from which we are working (in my case *10.0.2.7*) a new page is opened at a new tab 
+as shown in the next immage:
+![img_2.png](img_2.png)
+![Photo of Mountain](images/Screenshot%202024-05-30%20093511.png)
 
 ![The Markdown Mark](images/markdown-red.png)  
 _Figure 1: The Markdown Mark_
