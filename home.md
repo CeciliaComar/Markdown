@@ -17,7 +17,7 @@ enter into the machine using the SSH protocol.
 Due to a sudo misconfiguration it will be possible also to perform privilege escalation obtaining root access to the machine.
 
 ## Scan of the network
-First of all the command *hostname -I* has to be performed in order to discover the IP address of the machine from which the attacker is working.  
+First of all the command *hostname -I* is performed from the kali Linux machine in order to discover the IP address of the kali machine itself.  
 Then the network has to be scanned in order to find other machines in it: this can be done with the command *sudo nmap -v --min-rate 10000 10.0.2.3-254 | grep open*.  
 The output of the scan tells that in the network there is a system with IP address *10.0.2.15* which has as open ports:
 * port 80 on which is running a http service
@@ -37,22 +37,21 @@ Since much can't be done with SSH, a look to the Website is taken.
 ## Web Page
 The web page related to the IP address *10.0.2.15* shows a Login page:
 once an account is created (with any username and password), after the login, a free blog promotions site appears.  
-I chose as username *test* and as password *password*.
-Any link can be here submitted and when this is done, it is displayed on the site for us to check out: 
-if as link is inserted the IP address of the machine from which the attacker is working (in my case *10.0.2.7*) a new page is opened at a new tab 
-as shown.  
-Looking at the source code of the previously displayed login page, this particular URL link functionality on the site is vulnerable to Tab Nabbing:
+The username *test* and  password *password* have been chosen.   
+Any link can be here submitted: if as link is inserted the IP address of the machine from which the attacker is working (in my case *10.0.2.7*) a new page is opened at a new tab.  
+Analysing the source code of the page, it is showed that this link is vulnerable to Tab Nabbing due to the presence of *target='_blank'*:
 ![img_3.png](img_3.png)
 
 ## Tab Nabbing
 A malicious website opened through *target='_blank'* can change the *window.opener.location* to a phising page, potentially misleading users. 
-Since users usually trust the page that is already opened, they will not get suspicious.
-The idea of the attack is this: since the site indicates that the admin of the page will review the links, it is assumable that he will be clicking on that link as well. 
-If the admin is tricked into thinking that he got logged out, then he will input his credentials again but this time it will be in the attacker-controlled page.  
+Since users usually trust the page that is already opened, they will not get suspicious.  
+The idea of the attack is this: 2 fake webpages will be created. A user may send to these fake pages its crendentials and he/she will never realize that it is not the real webpage.
+(since the site indicates that the admin of the page will review the links, it is assumable that he will be clicking on that link as well. 
+If the admin is tricked into thinking that he got logged out, then he will input his credentials again but this time it will be in the attacker-controlled page.)
 The next step to perform in order to implement this idea, is writing the exploit.
 
 ## Exploit construction
-The first thing to do is to create a file coping the source code of the login page.  I called this file *index.html*.  
+The first thing to do is to create a file coping the source code of the login page.  This file is named *index.html*.  
 The second step to perform is to write the payload in a different file:  
 ![img_6.png](img_6.png)
 
@@ -61,6 +60,7 @@ In order to phish some credentials, need to be started:
 * a TCP server on port 8000: done with the command *sudo nc -nlvp 8000* 
 * an HTTP server on port 80:  once the command *sudo python3 -m http.server 80* has been performed, the HTTP server will serve the files in the 
 current directory on port 80 to the users that will connect on this system's port.  
+
 The operations that need to be performed are as follows: 
 1. into the page obtained after the login, submit the link pointing to the malicious html
 ![img_7.png](img_7.png)
@@ -92,11 +92,15 @@ one that follows:
 is chosen because it is a system directory in Linux that serves as shared memory temporary 
 file system: files created in this folder are visible to all system processes, which makes
 them useful for temporary data exchange between processes  
-![img_14.png](img_14.png)
-2. the query *query.py* is modified to execute this reverse shell:
+![img_14.png](img_14.png)  
+
+2. the query *query.py* is modified to execute this reverse shell:  
+
 ![img_16.png](img_16.png)
+
 3. a TCP server needs to be started from kali machine: after a few minutes the reverse shell is obtained
-![img_17.png](img_17.png)
+![img_17.png](img_17.png)  
+
 Checking the permissions of the user Adrian, what is discovered is that *Vim* can be executed as root without
 needing to know the password (case of violation of the principle of Least Privilege) and thanks to what is explained by Gtfobins the root access can be obtained with the command *sudo /usr/bin/vim -c ':!/bin/sh'*:  
 ![img_19.png](img_19.png)
