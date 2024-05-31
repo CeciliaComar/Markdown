@@ -1,6 +1,11 @@
-# REPORT DEMO CYBERSECURITY: Vunlhub Napping
-**CECILIA COMAR IN2000243**
+# REPORT DEMO CYBERSECURITY: *Vulnhub Napping*
+*Student:* **CECILIA COMAR**  
+*Student ID number:* **IN2000243**  
+*Study program:* **Computer Engineering**
 
+
+## Credits
+I realized my demo using the Napping virtual machine available at [this link](https://www.vulnhub.com/entry/napping-101,752/), in particular following the provided walkthrough.
 ## Introduction
 Napping is a Vulnhub machine created for highlighting the exploit of Tab Nabbing.
 Tab Nabbing is a type of phishing attack where a malicious website or script alters the content of a browser tab after 
@@ -48,8 +53,8 @@ The next step to perform in order to implement this idea, is writing the exploit
 
 ## Exploit construction
 The first thing to do is to create a file coping the source code of the login page.  I called this file *index.html*.  
-The second step to perform is to write the payload in a different file:
-![img_6.png](img_6.png)  
+The second step to perform is to write the payload in a different file:  
+![img_6.png](img_6.png)    
 I found the syntax for constructing this payload searching on Internet.
 
 ## Phished Credentials
