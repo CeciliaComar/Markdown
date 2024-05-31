@@ -54,8 +54,7 @@ The next step to perform in order to implement this idea, is writing the exploit
 ## Exploit construction
 The first thing to do is to create a file coping the source code of the login page.  I called this file *index.html*.  
 The second step to perform is to write the payload in a different file:  
-![img_6.png](img_6.png)    
-I found the syntax for constructing this payload searching on Internet.
+![img_6.png](img_6.png)
 
 ## Phished Credentials
 In order to phish some credentials, need to be started:
@@ -92,7 +91,7 @@ one that follows:
 1. in the directory */dev/shm* will be created a reverse shell bash script. This directory
 is chosen because it is a system directory in Linux that serves as shared memory temporary 
 file system: files created in this folder are visible to all system processes, which makes
-them useful for temporary data exchange between processes
+them useful for temporary data exchange between processes  
 ![img_14.png](img_14.png)
 2. the query *query.py* is modified to execute this reverse shell:
 ![img_16.png](img_16.png)
