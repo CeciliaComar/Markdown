@@ -96,8 +96,7 @@ them useful for temporary data exchange between processes
 
 2. the query *query.py* is modified to execute this reverse shell:  
 
-![img_16.png](img_16.png)
-
+![img_20.png](img_20.png)
 3. a TCP server needs to be started from kali machine: after a few minutes the reverse shell is obtained
 ![img_17.png](img_17.png)  
 
