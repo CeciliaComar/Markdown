@@ -11,12 +11,13 @@ Napping is a Vulnhub machine created for highlighting the exploit of Tab Nabbing
 Tab Nabbing is a type of phishing attack where a malicious website or script alters the content of a browser tab after 
 the user has navigated away from it, typically to another tab or application. The altered content often mimics a 
 legitimate website, tricking users into entering their credentials or other sensitive information.
-In this report a Tab Nabbing attack will be performed to phish some credentials from an administrator.
+In this report a Tab Nabbing attack will be performed against the Napping machine, to phish some credentials from an administrator.
 Then, thanks to the bad practice followed by this user to use the same credential also for SSH, it will be possible to 
 enter into the machine using the SSH protocol.
 Due to a sudo misconfiguration it will be possible also to perform privilege escalation obtaining root access to the machine.
 
 ## Scan of the network
+The attack will be performed from the kali Linux machine.  
 First of all the command *hostname -I* is performed from the kali Linux machine in order to discover the IP address of the kali machine itself.  
 Then the network has to be scanned in order to find other machines in it: this can be done with the command *sudo nmap -v --min-rate 10000 10.0.2.3-254 | grep open*.  
 The output of the scan tells that in the network there is a system with IP address *10.0.2.15* which has as open ports:
@@ -43,17 +44,20 @@ Analysing the source code of the page, it is showed that this link is vulnerable
 ![img_3.png](img_3.png)
 
 ## Tab Nabbing
-A malicious website opened through *target='_blank'* can change the *window.opener.location* to a phising page, potentially misleading users. 
+A malicious website opened through *target='_blank'* can change the *window.opener.location* to a different page, potentially misleading users. 
 Since users usually trust the page that is already opened, they will not get suspicious.  
-The idea of the attack is this: 2 fake webpages will be created. A user may send to these fake pages its crendentials and he/she will never realize that it is not the real webpage.
-(since the site indicates that the admin of the page will review the links, it is assumable that he will be clicking on that link as well. 
-If the admin is tricked into thinking that he got logged out, then he will input his credentials again but this time it will be in the attacker-controlled page.)
+The idea of the attack is this: since the homepage indicates that the page administrator will review the links, 
+I can assume that he will click on the links I submit. 
+If I submit a link appropriately constructed, by making the page inactive at the moment it opens the 
+new tab, the page inactive will be modified into a page controlled by me that appears identical to the login page: 
+when the administrator returns to this page, he will re-enter the credentials without noticing the redirection, 
+and thus I will be able to obtain them.  
 The next step to perform in order to implement this idea, is writing the exploit.
 
 ## Exploit construction
 The first thing to do is to create a file coping the source code of the login page.  This file is named *index.html*.  
 The second step to perform is to write the payload in a different file:  
-![img_6.png](img_6.png)
+![img.png](img.png)
 
 ## Phished Credentials
 In order to phish some credentials, need to be started:
@@ -62,8 +66,11 @@ In order to phish some credentials, need to be started:
 current directory on port 80 to the users that will connect on this system's port.  
 
 The operations that need to be performed are as follows: 
-1. into the page obtained after the login, submit the link pointing to the malicious html
-![img_7.png](img_7.png)
+1. into the page obtained after the login, submit the link pointing to the file indez.html
+![img_7.png](img_7.png)  
+When the user clicks on this link, he/she will receive the index file from the HTTP server that was started, which will 
+redirect the login page to the index.html page that appears identical to the login page
+but is actually under the control of the attacker. When the user enters his/her credentials, these will be captured by the TCP server.
 2. click on the link: it opens the malicious webpage 
 3. after a few moments looking at the output of the *nc* command the username and password of a user
 are received:  
@@ -72,7 +79,7 @@ This credential can be used for login into the vulnerable machine via ssh.
 
 # Discovery
 At this point a good idea is looking around in the system: some useful information that can be obtained is
-* groups to which the user daniel belong: with the command *id* is discovered that daniel is part of the administrators group!
+* groups to which the user daniel belong: with the command *groups* is discovered that daniel is part of the administrators group!
 * interesting files at which daniel has access: with the command *find / group -administrators -type f 2>/dev/null*  
 where the option *'2>/dev/null'* redirects any error messages to */dev/null*, which is 
 a special device in Linux that discards everything sent to it. This prevents 
@@ -80,7 +87,7 @@ error messages related to directories that are not accessible from being display
 this command all files owned by the administrators group are being searched starting 
 from the root of the file system.  
 An interesting file found is the Python script *query.py* which appears to check the status of the 
-Web Server and then writing in the file *site_status*.
+Web Server and then writing it in the file *site_status*.
 By checking the rights of this file with the command *ls -l /home/adrian/query.py* it is discovered
 that the user daniel has write permissions on it because he belongs to the administrators group
 and by analysing the content of the file *site_status.txt* with the *cat* command it appears that this file is executed every 2 minutes.  
@@ -95,14 +102,13 @@ them useful for temporary data exchange between processes
 ![img_14.png](img_14.png)  
 
 2. the query *query.py* is modified to execute this reverse shell:  
-
-![img_20.png](img_20.png)
+![img_1.png](img_1.png)
 3. a TCP server needs to be started from kali machine: after a few minutes the reverse shell is obtained
 ![img_17.png](img_17.png)  
 
 Checking the permissions of the user Adrian, what is discovered is that *Vim* can be executed as root without
-needing to know the password (case of violation of the principle of Least Privilege) and thanks to what is explained by Gtfobins the root access can be obtained with the command *sudo /usr/bin/vim -c ':!/bin/sh'*:  
-![img_19.png](img_19.png)
+needing to know the password (case of violation of the principle of Least Privilege) and according to [Gitfobins](https://gtfobins.github.io/gtfobins/vim/) the root access can be obtained with the command *sudo /usr/bin/vim -c ':!/bin/sh'*:  
+![img_2.png](img_2.png)
 
       
 
