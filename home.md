@@ -5,7 +5,7 @@
 
 
 ## Credits
-I realized my demo using the Napping virtual machine available at [this link](https://www.vulnhub.com/entry/napping-101,752/), in particular following the provided walkthrough.
+I realized this report using the Napping virtual machine available at [this link](https://www.vulnhub.com/entry/napping-101,752/), in particular following the provided walkthrough.
 ## Introduction
 Napping is a Vulnhub machine created for highlighting the exploit of Tab Nabbing.
 Tab Nabbing is a type of phishing attack where a malicious website or script alters the content of a browser tab after 
@@ -107,7 +107,7 @@ them useful for temporary data exchange between processes
 ![img_17.png](img_17.png)  
 
 Checking the permissions of the user Adrian, what is discovered is that *Vim* can be executed as root without
-needing to know the password (case of violation of the principle of Least Privilege) and according to [Gitfobins](https://gtfobins.github.io/gtfobins/vim/) the root access can be obtained with the command *sudo /usr/bin/vim -c ':!/bin/sh'*:  
+needing to know the password and according to [Gitfobins](https://gtfobins.github.io/gtfobins/vim/) the root access can be obtained with the command *sudo /usr/bin/vim -c ':!/bin/sh'*:  
 ![img_2.png](img_2.png)
 
       
