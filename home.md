@@ -44,13 +44,13 @@ Analysing the source code of the page, it is showed that this link is vulnerable
 ![img_3.png](img_3.png)
 
 ## Tab Nabbing
-A malicious website opened through *target='_blank'* can change the *window.opener.location* to a different page, potentially misleading users. 
+A malicious website opened through *target='_blank'* can change the *windows.opener.location* to a different page, potentially misleading users. 
 Since users usually trust the page that is already opened, they will not get suspicious.  
 The idea of the attack is this: since the homepage indicates that the page administrator will review the links, 
-I can assume that he will click on the links I submit. 
+I can assume that he/she will click on the links I submit. 
 If I submit a link appropriately constructed, by making the page inactive at the moment it opens the 
 new tab, the page inactive will be modified into a page controlled by me that appears identical to the login page: 
-when the administrator returns to this page, he will re-enter the credentials without noticing the redirection, 
+when the administrator returns to this page, he/she will re-enter the credentials without noticing the redirection, 
 and thus I will be able to obtain them.  
 The next step to perform in order to implement this idea, is writing the exploit.
 
@@ -66,7 +66,7 @@ In order to phish some credentials, need to be started:
 current directory on port 80 to the users that will connect on this system's port.  
 
 The operations that need to be performed are as follows: 
-1. into the page obtained after the login, submit the link pointing to the file indez.html
+1. into the page obtained after the login, submit the link pointing to the file *indez.html*
 ![img_7.png](img_7.png)  
 When the user clicks on this link, he/she will receive the index file from the HTTP server that was started, which will 
 redirect the login page to the index.html page that appears identical to the login page
